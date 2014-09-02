@@ -1,4 +1,6 @@
 /*!
+ * @description polyfill features of ES5
+ * @module basic features
  * @author fsjohnhuang
  * @version v0.1
  */
@@ -18,24 +20,13 @@
 			return this.replace(/^\s+|\s+$/g, '');
 		};
 
-
- 		function bound(){
- 			if (this instanceof bound){
- 				var ctor = function(){};
- 				ctor.prototype = fn.prototype;
- 				var self = new ctor();
- 				fn.apply(self, presetArgs.concat([].slice.call(arguments)));
- 				return self;
- 			}
- 			return fn.apply(context, presetArgs.concat([].slice.call(arguments)));
- 		};
-
 	/**
 	 * Function
 	 */
 	if (!Function.prototype.bind){
 		var _bound = function(){
-	 			if (this instanceof bound){
+				// 对new一元运算符进行处理
+	 			if (this instanceof _bound){
 	 				var ctor = function(){};
 	 				ctor.prototype = fn.prototype;
 	 				var self = new ctor();
@@ -43,8 +34,8 @@
 	 				return self;
 	 			}
 	 			return fn.apply(context, presetArgs.concat([].slice.call(arguments)));
-			}
-			, _boundStr = _bound.toString();	
+			};
+		var	_boundStr = _bound.toString();	
 		var boundCache = {}; // 缓存
 
 		Function.prototype.bind = function(){
@@ -62,7 +53,7 @@
 		 		// 由于函数的length属性不可重新赋值(特性writable:false)，所以需通过动态定义函数的方式定义bound
 		 		// 1. new Function(arg1,arg2,...,fnBody)的VariableObject和this都指向Global Object，因此无法正确调用fn.apply(context,.......)
 		 		// 2. eval在函数内调用时，VariableObject指向所属函数的VariableObject，因此使用eval动态定义函数
-		 		var bound = boundCache[cacheKey] = eval('(0, ' + _boundStr.replace('function()', 'function(' + boundArgs.join(',') + ')') + ')');
+		 		boundCache[cacheKey] = eval('(0, ' + _boundStr.replace('function()', 'function(' + boundArgs.join(',') + ')') + ')');
 		 	}
 
 	 		return boundCache[cacheKey];
