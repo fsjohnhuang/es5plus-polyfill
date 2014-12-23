@@ -17,7 +17,7 @@
 	 */
 	String.prototype.trim = String.prototype.trim
 		|| function(){
-			return this.replace(/^\s+|\s+$/g, '');
+			return this.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
 		};
 
 	/**
