@@ -660,6 +660,26 @@
 		document.defaultView = window;
 	}
 
+	/**
+	 * IE5.5~8下的parseInt将根据入参来决定基数
+	 * 具体：IE5.5~8下的parseInt('09')返回0，而其他浏览器则为9
+	 */
+	var nParseInt = window.parseInt
+	window.parseInt = function(str, radix){
+		return nParseInt(str, radix || 10)
+	}
+
+	/**
+	 * 修复IE5.5~8下setTimeout不提供预设入参的功能
+	 */
+	var nSetTimeout = window.setTimeout
+	window.setTimeout = function(cb, delay /*...args*/){
+		var args = [].slice.call(arguments, 2)
+		return nSetTimeout(function(){
+			cb.apply(window, args)
+		}, delay)
+	}
+
 
 	/**
 	 * Event
@@ -891,4 +911,4 @@
 		return this.replace(/\s+$/i, '');
 	};
 
-}());
+}())
